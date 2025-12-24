@@ -47,12 +47,26 @@
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+/* Definitions for Chassis */
+osThreadId_t ChassisHandle;
+const osThreadAttr_t Chassis_attributes = {
+  .name = "Chassis",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for Gimbal */
+osThreadId_t GimbalHandle;
+const osThreadAttr_t Gimbal_attributes = {
+  .name = "Gimbal",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for RemoteControl */
+osThreadId_t RemoteControlHandle;
+const osThreadAttr_t RemoteControl_attributes = {
+  .name = "RemoteControl",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -60,7 +74,9 @@ const osThreadAttr_t defaultTask_attributes = {
 
 /* USER CODE END FunctionPrototypes */
 
-void StartDefaultTask(void *argument);
+void StartChassisTask(void *argument);
+void StartGimbalTask(void *argument);
+void StartRcTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -91,8 +107,14 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of Chassis */
+  ChassisHandle = osThreadNew(StartChassisTask, NULL, &Chassis_attributes);
+
+  /* creation of Gimbal */
+  GimbalHandle = osThreadNew(StartGimbalTask, NULL, &Gimbal_attributes);
+
+  /* creation of RemoteControl */
+  RemoteControlHandle = osThreadNew(StartRcTask, NULL, &RemoteControl_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -104,22 +126,58 @@ void MX_FREERTOS_Init(void) {
 
 }
 
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_StartChassisTask */
 /**
-  * @brief  Function implementing the defaultTask thread.
+  * @brief  Function implementing the Chassis thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+/* USER CODE END Header_StartChassisTask */
+void StartChassisTask(void *argument)
 {
-  /* USER CODE BEGIN StartDefaultTask */
+  /* USER CODE BEGIN StartChassisTask */
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
-  /* USER CODE END StartDefaultTask */
+  /* USER CODE END StartChassisTask */
+}
+
+/* USER CODE BEGIN Header_StartGimbalTask */
+/**
+* @brief Function implementing the Gimbal thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartGimbalTask */
+void StartGimbalTask(void *argument)
+{
+  /* USER CODE BEGIN StartGimbalTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartGimbalTask */
+}
+
+/* USER CODE BEGIN Header_StartRcTask */
+/**
+* @brief Function implementing the RemoteControl thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartRcTask */
+void StartRcTask(void *argument)
+{
+  /* USER CODE BEGIN StartRcTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartRcTask */
 }
 
 /* Private application code --------------------------------------------------*/
