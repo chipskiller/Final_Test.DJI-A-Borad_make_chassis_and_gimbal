@@ -52,21 +52,21 @@ osThreadId_t ChassisHandle;
 const osThreadAttr_t Chassis_attributes = {
   .name = "Chassis",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityAboveNormal,
 };
 /* Definitions for Gimbal */
 osThreadId_t GimbalHandle;
 const osThreadAttr_t Gimbal_attributes = {
   .name = "Gimbal",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityRealtime,
 };
 /* Definitions for RemoteControl */
 osThreadId_t RemoteControlHandle;
 const osThreadAttr_t RemoteControl_attributes = {
   .name = "RemoteControl",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityHigh,
 };
 
 /* Private function prototypes -----------------------------------------------*/
