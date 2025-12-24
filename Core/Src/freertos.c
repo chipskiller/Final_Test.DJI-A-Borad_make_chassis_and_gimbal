@@ -47,6 +47,11 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+//底盘电机变量
+extern moto_info_t motor_info[MOTOR_MAX_NUM];
+pid_struct_t motor_pid[7];
+//遥控器变量
+extern rc_info_t rc;
 
 /* USER CODE END Variables */
 /* Definitions for Chassis */
