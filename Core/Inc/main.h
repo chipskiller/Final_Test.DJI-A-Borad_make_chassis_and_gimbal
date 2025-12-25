@@ -65,9 +65,11 @@ void Error_Handler(void);
 #define POWER3_CTRL_GPIO_Port GPIOH
 #define POWER4_CTRL_Pin GPIO_PIN_5
 #define POWER4_CTRL_GPIO_Port GPIOH
+#define LED_Pin GPIO_PIN_7
+#define LED_GPIO_Port GPIOG
 
 /* USER CODE BEGIN Private defines */
-
+void init_fault();
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

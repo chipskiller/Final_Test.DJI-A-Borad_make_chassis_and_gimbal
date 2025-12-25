@@ -52,6 +52,7 @@
 /* USER CODE BEGIN PV */
 int16_t Vx,Vy;
 int16_t wheel_speed[4];
+pid_struct_t motor_pid[7];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -63,7 +64,14 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void init_fault()
+{
+  while (1)
+  {
+    HAL_Delay(500);
+    //HAL_GPIO_TogglePin(fault_GPIO_Port,fault_Pin);
+  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -101,15 +109,15 @@ int main(void)
   MX_SPI1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  can_user_init(&hcan2);//滤波器设置，开启CAN
   dbus_uart_init();
   // can_user_init(&hcan1);//滤波器设置，开启CAN  /* Infinite loop */
-  // for (uint8_t i = 0; i < 7; i++)
-  // {
-  //   pid_init(&motor_pid[i], 50, 6, 2, 30000, 25000); //init pid parameter, kp=40, ki=3, kd=0, output limit = 30000
-  // }
+  for (uint8_t i = 0; i < 7; i++)
+  {
+    pid_init(&motor_pid[i], 50, 6, 2, 300, 300); //init pid parameter, kp=40, ki=3, kd=0, output limit = 30000
+  }
   // dbus_uart_init();
-  // HAL_GPIO_WritePin(GPIOH, POWER1_CTRL_Pin|POWER2_CTRL_Pin|POWER3_CTRL_Pin|POWER4_CTRL_Pin, GPIO_PIN_SET); // switch on 24v power
+  //HAL_GPIO_WritePin(GPIOH, POWER1_CTRL_Pin|POWER2_CTRL_Pin|POWER3_CTRL_Pin|POWER4_CTRL_Pin, GPIO_PIN_SET); // switch on 24v power
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */

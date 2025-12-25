@@ -16,7 +16,6 @@
  ***************************************************************************/
  
 #include "bsp_can.h"
-#include "bsp_led.h"
 
 
 moto_info_t motor_info[MOTOR_MAX_NUM];
@@ -67,21 +66,28 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
   //init_fault();
   //can_cnt ++;//测试是否进回调函数
-  CAN_RxHeaderTypeDef rx_header;
-  uint8_t             rx_data[8];
   if(hcan->Instance == CAN2)
   {
+    CAN_RxHeaderTypeDef rx_header;
+    uint8_t             rx_data[8];
+
     HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data); //receive can data
-  }
-  if ((rx_header.StdId >= FEEDBACK_ID_BASE)
-      && (rx_header.StdId <  FEEDBACK_ID_BASE + MOTOR_MAX_NUM))//验证回报id                  // judge the can id
-  {
-    can_cnt ++;
-    uint8_t index = rx_header.StdId - FEEDBACK_ID_BASE;                  // get motor index by can_id
-    motor_info[index].rotor_angle    = ((rx_data[0] << 8) | rx_data[1]);
-    motor_info[index].rotor_speed    = ((rx_data[2] << 8) | rx_data[3]);
-    motor_info[index].torque_current = ((rx_data[4] << 8) | rx_data[5]);
-    motor_info[index].temp           =   rx_data[6];
+
+    if ((rx_header.StdId >= FEEDBACK_ID_BASE)
+        && (rx_header.StdId <  FEEDBACK_ID_BASE + MOTOR_MAX_NUM))//验证回报id                  // judge the can id
+    {
+      can_cnt ++;
+      uint8_t index = rx_header.StdId - FEEDBACK_ID_BASE;                  // get motor index by can_id
+      motor_info[index].rotor_angle    = ((rx_data[0] << 8) | rx_data[1]);
+      motor_info[index].rotor_speed    = ((rx_data[2] << 8) | rx_data[3]);
+      motor_info[index].torque_current = ((rx_data[4] << 8) | rx_data[5]);
+      motor_info[index].temp           =   rx_data[6];
+    }
+    if (can_cnt==500)
+    {
+      HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+      can_cnt = 0;
+    }
   }
 }
 
@@ -96,7 +102,7 @@ void set_motor_voltage(CAN_HandleTypeDef hcan,uint8_t id_range, int16_t v1, int1
   CAN_TxHeaderTypeDef tx_header;
   uint8_t             tx_data[8];
   //设置报文头
-  tx_header.StdId = 0x200;//(id_range == 0)?(0x1ff):(0x2ff);
+  tx_header.StdId = 0x200;//c620id         //(id_range == 0)?(0x1ff):(0x2ff);
   tx_header.IDE   = CAN_ID_STD;
   tx_header.RTR   = CAN_RTR_DATA;
   tx_header.DLC   = 8;

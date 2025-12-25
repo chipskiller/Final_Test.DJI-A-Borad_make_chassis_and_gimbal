@@ -50,6 +50,9 @@ float pid_calc(pid_struct_t *pid, float ref, float fdb)
   pid->fdb = fdb;
   pid->err[1] = pid->err[0];
   pid->err[0] = pid->ref - pid->fdb;
+  // //防止跳变
+  // if (pid->err[0] > 4096)pid->err[0]-= 8192;  // 超过半圈减一圈
+  // if (pid->err[0] < -4096) pid->err[0] += 8192; // 少于负半圈加一圈
   
   pid->p_out  = pid->kp * pid->err[0];
   pid->i_out += pid->ki * pid->err[0];

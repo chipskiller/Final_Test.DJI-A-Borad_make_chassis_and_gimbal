@@ -49,7 +49,7 @@
 /* USER CODE BEGIN Variables */
 //底盘电机变量
 extern moto_info_t motor_info[MOTOR_MAX_NUM];
-pid_struct_t motor_pid[7];
+extern pid_struct_t motor_pid[7];
 //遥控器变量
 extern rc_info_t rc;
 
@@ -142,27 +142,52 @@ void StartChassisTask(void const * argument)
   /* USER CODE BEGIN StartChassisTask */
   extern int16_t Vx,Vy;
   extern int16_t wheel_speed[4];
-  can_user_init(&hcan2);//滤波器设置，开启CAN
+
   /* Infinite loop */
   for(;;)
   {
-    Vx=rc.ch3;
-    Vy=rc.ch4;
-    wheel_speed[0] = -Vx - Vy ;
-    wheel_speed[1] = Vx - Vy ;
-    wheel_speed[2] = Vx + Vy ;
-    wheel_speed[3] = -Vx + Vy;
-    for (uint8_t i = 0; i < 4; i++)
+    if (rc.sw1==3)//平移模式
     {
-      motor_info[i].set_voltage = pid_calc(&motor_pid[i], wheel_speed[i], motor_info[i].rotor_speed);
-    }
-    /* send motor control message through can bus*/
-    set_motor_voltage(hcan2,
+      Vx=rc.ch3;
+      Vy=rc.ch4;
+
+      wheel_speed[0] = -Vx - Vy ;
+      wheel_speed[1] = Vx - Vy ;
+      wheel_speed[2] = Vx + Vy ;
+      wheel_speed[3] = -Vx + Vy;
+      for (uint8_t i = 0; i < 4; i++)
+      {
+        motor_info[i].set_voltage = pid_calc(&motor_pid[i], wheel_speed[i], motor_info[i].rotor_speed);
+      }
+      /* send motor control message through can bus*/
+      set_motor_voltage(hcan2,
                       0,
                       motor_info[0].set_voltage,
                       motor_info[1].set_voltage,
                       motor_info[2].set_voltage,
                       motor_info[3].set_voltage);
+    }
+    else if (rc.sw1==1)//旋转模式
+    {
+      Vx=rc.ch3;
+      Vy=rc.ch4;
+
+      wheel_speed[0] = -Vx - Vy ;
+      wheel_speed[1] = Vx - Vy ;
+      wheel_speed[2] = Vx + Vy ;
+      wheel_speed[3] = -Vx + Vy;
+      for (uint8_t i = 0; i < 4; i++)
+      {
+        motor_info[i].set_voltage = pid_calc(&motor_pid[i], wheel_speed[i], motor_info[i].rotor_speed);
+      }
+      /* send motor control message through can bus*/
+      set_motor_voltage(hcan2,
+                      0,
+                      motor_info[0].set_voltage,
+                      motor_info[1].set_voltage,
+                      motor_info[2].set_voltage,
+                      motor_info[3].set_voltage);
+    }
     osDelay(1);
   }
   /* USER CODE END StartChassisTask */

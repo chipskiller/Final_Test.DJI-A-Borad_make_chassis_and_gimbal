@@ -20,10 +20,10 @@
 
 #include "can.h"
 
-#define FEEDBACK_ID_BASE      0x205
+#define FEEDBACK_ID_BASE      0x201
 #define CAN_CONTROL_ID_BASE   0x1ff
 #define CAN_CONTROL_ID_EXTEND 0x2ff
-#define MOTOR_MAX_NUM         7
+#define MOTOR_MAX_NUM         4
 
 typedef struct
 {
